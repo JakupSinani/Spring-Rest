@@ -1,6 +1,8 @@
 package com.luv2code.springdemo.rest;
 
 import com.luv2code.springdemo.entity.Student;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -33,7 +35,47 @@ public class StudentRestController {
     @GetMapping("/students/{studentId}")
     public Student getStudent(@PathVariable int studentId){
         //  just index into the list ...
+
+        //  check the studentId against list size
+
+        if ((studentId>= theStudents.size())||(studentId<0)){
+            throw new StudentNotFoundException("Student id not found - "+studentId);
+        }
         return theStudents.get(studentId);
     }
+
+    //  add an exception handler using @ExceptionHandler
+
+   /* @ExceptionHandler
+    public ResponseEntity<StudentErrorResponse>handleException(StudentNotFoundException exc){
+
+        //  create a StudentErrorResponse
+
+        StudentErrorResponse errorResponse=new StudentErrorResponse();
+        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        errorResponse.setMessage(exc.getMessage());
+        errorResponse.setTimeStamp(System.currentTimeMillis());
+
+        //  return ResponseEntity
+
+        return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
+
+    }
+
+    //  add another exception handler ... to catch any exception (catch all)
+
+    @ExceptionHandler
+    public ResponseEntity<StudentErrorResponse>handleException(Exception exc){
+
+        //  create a StudentErrorResponse
+        StudentErrorResponse errorResponse=new StudentErrorResponse();
+
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setMessage(exc.getMessage());
+        errorResponse.setTimeStamp(System.currentTimeMillis());
+
+        //  return ResponseEntity
+        return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+    }*/
 
 }
